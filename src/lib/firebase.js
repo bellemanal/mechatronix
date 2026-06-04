@@ -1,0 +1,29 @@
+import { initializeApp, getApps } from 'firebase/app'
+import {
+  getAuth,
+  GoogleAuthProvider,
+  setPersistence,
+  browserLocalPersistence,
+} from 'firebase/auth'
+
+const firebaseConfig = {
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+}
+
+// Prevent duplicate initialization during HMR
+const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0]
+
+export const auth = getAuth(app)
+export const googleProvider = new GoogleAuthProvider()
+
+// Persist auth session across browser refreshes
+setPersistence(auth, browserLocalPersistence)
+
+googleProvider.setCustomParameters({
+  prompt: 'select_account',
+})
+
+export default app
